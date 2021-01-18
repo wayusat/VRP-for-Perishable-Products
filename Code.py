@@ -101,5 +101,5 @@ def SortingRetailerDemand(RetailerDemand):
     Sort = {i:j for i, j in sorted(RetailerDemand.items(), key=lambda x:x[1])}
     return Sort
 
-print ('titik awal vehicle :', PostofVehicle(V, N))
-print('urutan demand dari besar ke kecil :',SortingRetailerDemand(DemandRetailer_N))
+#print ('titik awal vehicle :', PostofVehicle(V, N))
+#print('urutan demand dari besar ke kecil :',SortingRetailerDemand(DemandRetailer_N))
