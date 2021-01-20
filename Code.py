@@ -3,6 +3,11 @@ Created on 11 Des 2020
 
 @author: User
 '''
+import copy
+
+
+'''                             P A R A M E T E R                            '''
+
 #============Variable setiap entitas=============#
 #n1 = jumlah retailer pada cluster 1 Singkawang
 n1 = 40
@@ -91,7 +96,8 @@ for i in range(0,totjumlahretailer+1):
 plt.show()
 
 
-'''                         GREEDY HEURISTIC                        '''
+
+'''                             GREEDY HEURISTIC                            '''
 
 def PostofVehicle (JumlahTruck, Koordinat):
     truk_lokasi_awal = {i: Depot for i in JumlahTruck}
@@ -101,5 +107,40 @@ def SortingRetailerDemand(RetailerDemand):
     Sort = {i:j for i, j in sorted(RetailerDemand.items(), key=lambda x:x[1])}
     return Sort
 
+def SchedulingTruck(i, StartPosition, StartTime, CapacityofTruck, DemandRetailers, DistMatrix):
+    TruckPositionTime = {i: [(StartPosition,StartTime, CapacityofTruck)]}
+    a = copy.deepcopy(DemandRetailers)
+    for i in TruckPositionTime:
+        while bool(a) == True :
+            dest = list(a.keys())[0]
+            dist = DistMatrix[(StartPosition, dest)]
+            time_jalan = int(dist/20)
+            time_spent = StartTime + time_jalan
+            dropamount = list(a.values())[0]
+            sisa_muatan = CapacityofTruck - dropamount
+            newroute = (dest, time_spent, sisa_muatan)
+            TruckPositionTime.setdefault(i,[]).append(newroute)
+            StartPosition = dest
+            StartTime = time_spent
+            CapacityofTruck = sisa_muatan
+            del a[dest]
+            if CapacityofTruck <= list(a.values())[0] :
+                break
+        return TruckPositionTime
+
+def TruckRefill(JadwalTruk, LokasiDepot, DisMatrix):
+    trukpos = list(JadwalTruk.values())[0][-1][-1]
+    locDepot = LokasiDepot
+    jarakkedepot = DisMatrix[(trukpos, locDepot)]
+    Wtempuh = int(jarakkedepot/20)
+    Wdihabiskan = list(JadwalTruk.values())[0][-1][-2] + Wtempuh
+    refill = 100
+    rutebaru = (locDepot, Wdihabiskan, refill)
+    JadwalTruk.setdefault(i,[]).append(rutebaru)
+    return JadwalTruk 
+
+
+'''                          M A I N  P R O G R A M                              '''
+if __name__ == '__main__' : 
 #print ('titik awal vehicle :', PostofVehicle(V, N))
 #print('urutan demand dari besar ke kecil :',SortingRetailerDemand(DemandRetailer_N))
